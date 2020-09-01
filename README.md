@@ -6,7 +6,7 @@ a part of translation web server project
 
 ```&#39;
 tensorflow=='1.14.0'
-sklearn=='0.23.2'
+scikit-learn=='0.23.2'
 rdkit=='2019.03.1'
 ```
 
