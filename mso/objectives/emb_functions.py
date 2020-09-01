@@ -1,0 +1,75 @@
+"""
+Modeule with scoring functions that take molecular CDDD embeddings (positions of the particles in the swarm) as input.
+"""
+from scipy.spatial.distance import cdist
+from mso.data import load_predict_model_from_pkl
+from functools import wraps
+import joblib
+import os
+
+bace_score_512 = load_predict_model_from_pkl('bace_classifier.pkl')
+egfr_score_512 = load_predict_model_from_pkl('egfr_classifier.pkl')
+_dir = os.path.dirname(__file__)
+logd_model = joblib.load(os.path.join(_dir, 'models/logD_xgb.pkl'))
+ames_model = joblib.load(os.path.join(_dir, 'models/ames_xgb.pkl'))
+
+def approximate_res(func):
+    """
+    Decorator function that accurate to three decimal places
+    
+    """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        return round(float(func(*args, **kwargs)), 3)
+    return wrapper
+
+
+def distance_score(x, target, metric="cosine"):
+    """
+    Function tha calculates the distance between an input molecular embedding and a target molecular embedding.
+    :param x: input molecular embedding
+    :param target: target molecular embedding
+    :param metric: The metric used by scipy.spatial.distance.cdist to compute the distance in space.
+    :return: The distance between input and target.
+    """
+    score = cdist(x, target, metric).flatten()
+    return score
+
+
+# reg score
+# @approximate_res
+def logD_score(emb):
+    """
+    Measuring the logD of molecule
+    
+    Parameters
+    ----------
+    emb : numpy.ndarray, size (x,512)
+        the cddd descriptor of molecule
+
+    Returns
+    -------
+    logD : float
+        logD score
+    """
+    logD = logd_model.predict(emb)
+    return logD
+
+def ames_score(emb):
+    """
+    Measure the ames positive probability of molecule,
+    more close to 1, more "toxic"
+
+    Parameters
+    ----------
+    emb : numpy.ndarray, size (x,512)
+        the cddd descriptor of molecule
+
+    Returns
+    -------
+    ames : float
+        ames score
+
+    """
+    ames = ames_model.predict_proba(emb)[:,1]
+    return ames
