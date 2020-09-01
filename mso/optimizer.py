@@ -125,6 +125,10 @@ class BasePSOptimizer:
             max_fitness, min_fitness, mean_fitness = self._update_best_solutions(num_track)
             print("Step %d, max: %.3f, min: %.3f, mean: %.3f"
                   % (step, max_fitness, min_fitness, mean_fitness))
+            
+            if step==0:
+                self.init_solution = self.best_solutions
+                
             for swarm in self.swarms:
                 self._next_step_and_evaluate(swarm)
         return self.swarms
