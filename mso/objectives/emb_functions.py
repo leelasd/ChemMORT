@@ -7,11 +7,20 @@ from functools import wraps
 import joblib
 import os
 
+from tensorflow.keras.layers import Input, Dense, Dropout, BatchNormalization
+# from tensorflow.keras.layers import Multiply, Concatenate, Add
+from tensorflow.keras.models import Model
+
 bace_score_512 = load_predict_model_from_pkl('bace_classifier.pkl')
 egfr_score_512 = load_predict_model_from_pkl('egfr_classifier.pkl')
 _dir = os.path.dirname(__file__)
+
 logd_model = joblib.load(os.path.join(_dir, 'models/logD_xgb.pkl'))
 ames_model = joblib.load(os.path.join(_dir, 'models/ames_xgb.pkl'))
+
+################ DNN Model ################
+caco2_weights = os.path.join(_dir, 'models/Caco-2/Caco-2.ckpt')
+
 
 def approximate_res(func):
     """
@@ -24,7 +33,7 @@ def approximate_res(func):
     return wrapper
 
 
-def distance_score(x, target, metric="cosine"):
+def distance_score(emb, target, metric="cosine"):
     """
     Function tha calculates the distance between an input molecular embedding and a target molecular embedding.
     :param x: input molecular embedding
@@ -32,7 +41,7 @@ def distance_score(x, target, metric="cosine"):
     :param metric: The metric used by scipy.spatial.distance.cdist to compute the distance in space.
     :return: The distance between input and target.
     """
-    score = cdist(x, target, metric).flatten()
+    score = cdist(emb, target, metric).flatten()
     return score
 
 
@@ -73,3 +82,17 @@ def ames_score(emb):
     """
     ames = ames_model.predict_proba(emb)[:,1]
     return ames
+
+def caco2_score(emb):
+    """
+    """
+    cdddDescri = Input(shape=(512,), name="cdddDescriptor")
+    x = Dense(1024, activation='relu')(cdddDescri)
+    x = Dropout(0.5)(x)
+    output = Dense(1)(x)
+    
+    model = Model(inputs=cdddDescri, outputs=output)
+    model.load_weights(caco2_weights)
+    
+    caco2 = model.predict(emb)
+    return caco2.flatten()
