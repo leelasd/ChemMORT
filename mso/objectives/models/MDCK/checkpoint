@@ -1,0 +1,2 @@
+model_checkpoint_path: "MDCK.ckpt"
+all_model_checkpoint_paths: "MDCK.ckpt"
