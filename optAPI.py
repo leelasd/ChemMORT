@@ -10,16 +10,16 @@ from new_cddd.hyperparameters import DEFAULT_DATA_DIR
 from mso.optimizer import BasePSOptimizer
 from mso.objectives.scoring import ScoringFunction
 from mso.objectives.mol_functions import qed_score
-from mso.objectives.emb_functions import logD_score, ames_score
+from mso.objectives.emb_functions import logD_score, ames_score, caco2_score
 
 _default_model_dir = os.path.join(DEFAULT_DATA_DIR, 'default_model')
 model_dir = _default_model_dir
 
 infer_model = InferenceModel(
     model_dir=model_dir,
-    use_gpu=True,
+    use_gpu=False,
     batch_size=128,
-    cpu_threads=1)
+    cpu_threads=4,)
 
 
 class PropOptimizer:
@@ -47,7 +47,8 @@ class PropOptimizer:
     def _build_scoring_functions(self):
         func_list = {'qed': qed_score,
                      'logD': logD_score,
-                     'AMES': ames_score}
+                     'AMES': ames_score,
+                     'Caco-2': caco2_score}
         
         for prop_name in self.prop_dic.keys():
             func = func_list[prop_name]
@@ -94,18 +95,17 @@ if '__main__' == __name__:
     """
 
 
-
-        
     opt = PropOptimizer(
         init_smiles='c1ccccc1',
         num_part=200,
         num_swarms=1,
         prop_dic={"qed": {"range":[0,1]},
                   "logD": {"range":[-3,8], "allow_exceed":False},
-                  "AMES": {"range":[0,1], "ascending":False}},
+                  "AMES": {"range":[0,1], "ascending":False},
+                  "Caco-2": {"range":[-8,-4]}},
         )
     
-    opt.opt.run(10, 5)
+    opt.opt.run(3, 5)
     
     best_sol = opt.opt.best_solutions
     
