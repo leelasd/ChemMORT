@@ -10,7 +10,9 @@ from new_cddd.hyperparameters import DEFAULT_DATA_DIR
 from mso.optimizer import BasePSOptimizer
 from mso.objectives.scoring import ScoringFunction
 from mso.objectives.mol_functions import qed_score
-from mso.objectives.emb_functions import logD_score, ames_score, caco2_score
+from mso.objectives.emb_functions import logD_score, ames_score
+from mso.objectives.emb_functions import caco2_score, mdck_score, ppb_score
+
 
 _default_model_dir = os.path.join(DEFAULT_DATA_DIR, 'default_model')
 model_dir = _default_model_dir
@@ -45,14 +47,18 @@ class PropOptimizer:
         # self._build_optimizer()
         
     def _build_scoring_functions(self):
-        func_list = {'qed': qed_score,
-                     'logD': logD_score,
-                     'AMES': ames_score,
-                     'Caco-2': caco2_score}
+        func_list = {
+            'QED': qed_score,
+            'logD': logD_score,
+            'AMES': ames_score,
+            'Caco-2': caco2_score,
+            'MDCK': mdck_score,
+            'PPB': ppb_score,
+            }
         
         for prop_name in self.prop_dic.keys():
             func = func_list[prop_name]
-            is_mol_func = prop_name in ['qed']
+            is_mol_func = prop_name in ['QED']
             
             _range = self.prop_dic[prop_name]['range']
             if self.prop_dic[prop_name].get('ascending', True):
@@ -99,13 +105,17 @@ if '__main__' == __name__:
         init_smiles='c1ccccc1',
         num_part=200,
         num_swarms=1,
-        prop_dic={"qed": {"range":[0,1]},
-                  "logD": {"range":[-3,8], "allow_exceed":False},
-                  "AMES": {"range":[0,1], "ascending":False},
-                  "Caco-2": {"range":[-8,-4]}},
+        prop_dic={
+            "QED": {"range":[0,1]},
+            "logD": {"range":[-3,8], "allow_exceed":False},
+            "AMES": {"range":[0,1], "ascending":False},
+            "Caco-2": {"range":[-8,-4]},
+            "MDCK": {"range":[-8, -3]},
+            "PPB": {"range":[0,1]},
+            }
         )
     
-    opt.opt.run(3, 5)
+    opt.opt.run(2, 5)
     
     best_sol = opt.opt.best_solutions
     

@@ -6,10 +6,10 @@ import tensorflow as tf
 import multiprocessing as mp
 import json
 import os
-from .input_pipeline import InputPipelineInferEncode, InputPipelineInferDecode
-from .hyperparameters import add_arguments, create_hparams
-from .model_helper import build_models
-from .hyperparameters import DEFAULT_DATA_DIR
+from new_cddd.input_pipeline import InputPipelineInferEncode, InputPipelineInferDecode
+from new_cddd.hyperparameters import add_arguments, create_hparams
+from new_cddd.model_helper import build_models
+from new_cddd.hyperparameters import DEFAULT_DATA_DIR
 
 try:
     import zmq

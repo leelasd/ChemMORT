@@ -21,7 +21,7 @@ ames_model = joblib.load(os.path.join(_dir, 'models/ames_xgb.pkl'))
 ################ DNN Model ################
 caco2_weights = os.path.join(_dir, 'models/Caco-2/Caco-2.ckpt')
 mdck_weights = os.path.join(_dir, 'models/MDCk/MDCK.ckpt')
-
+ppb_weights = os.path.join(_dir, 'models/PPB/ppb.ckpt')
 
 def approximate_res(func):
     """
@@ -111,3 +111,17 @@ def mdck_score(emb):
 
     mdck = model.predict(emb)
     return mdck.flatten()
+
+def ppb_score(emb):
+    """
+    """
+    cdddDescri = Input(shape=(512,), name="cdddDescriptor")
+    x = Dense(128, activation='relu')(cdddDescri)
+    x = Dropout(0.5)(x)
+    output = Dense(1)(x)
+
+    model = Model(inputs=cdddDescri, outputs=output)
+    model.load_weights(caco2_weights)
+
+    ppb = model.predict(emb)
+    return ppb.flatten()
