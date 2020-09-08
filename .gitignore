@@ -117,3 +117,4 @@ model/*
 data/*
 
 modelScirpt/*
+emb.npy

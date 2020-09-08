@@ -12,7 +12,7 @@ from mso.objectives.scoring import ScoringFunction
 from mso.objectives.mol_functions import qed_score, logP_score
 from mso.objectives.emb_functions import logD_score, logS_score
 from mso.objectives.emb_functions import caco2_score, mdck_score, ppb_score
-from mso.objectives.emb_functions import ames_score, hERG_score
+from mso.objectives.emb_functions import ames_score, hERG_score, hepatoxicity_score
 
 
 _default_model_dir = os.path.join(DEFAULT_DATA_DIR, 'default_model')
@@ -58,6 +58,7 @@ class PropOptimizer:
             'logP': logP_score,
             'logS': logS_score,
             'hERG': hERG_score,
+            'hepatoxicity': hepatoxicity_score,
             }
         
         for prop_name in self.prop_dic.keys():
@@ -119,10 +120,11 @@ if '__main__' == __name__:
             "logP": {"range":[-5,9]},
             "logS": {"range":[-2,14]},
             "hERG": {"range":[0,1], "ascending":False},
+            # "hepatoxicity": {"range":[0,1], "ascending":False},
             }
         )
     
-    opt.opt.run(2, 5)
+    opt.opt.run(10, 5)
     
     best_sol = opt.opt.best_solutions
     
