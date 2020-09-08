@@ -10,8 +10,9 @@ from new_cddd.hyperparameters import DEFAULT_DATA_DIR
 from mso.optimizer import BasePSOptimizer
 from mso.objectives.scoring import ScoringFunction
 from mso.objectives.mol_functions import qed_score, logP_score
-from mso.objectives.emb_functions import logD_score, ames_score
+from mso.objectives.emb_functions import logD_score, logS_score, ames_score
 from mso.objectives.emb_functions import caco2_score, mdck_score, ppb_score
+
 
 
 _default_model_dir = os.path.join(DEFAULT_DATA_DIR, 'default_model')
@@ -55,6 +56,7 @@ class PropOptimizer:
             'MDCK': mdck_score,
             'PPB': ppb_score,
             'logP': logP_score,
+            'logS': logS_score,
             }
         
         for prop_name in self.prop_dic.keys():
@@ -114,6 +116,7 @@ if '__main__' == __name__:
             "MDCK": {"range":[-8, -3]},
             "PPB": {"range":[0,1]},
             "logP": {"range":[-5,9]},
+            "logS": {"range":[-2,14]}
             }
         )
     
