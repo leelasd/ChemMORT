@@ -17,6 +17,7 @@ _dir = os.path.dirname(__file__)
 
 logd_model = joblib.load(os.path.join(_dir, 'models/logD_xgb.pkl'))
 ames_model = joblib.load(os.path.join(_dir, 'models/ames_xgb.pkl'))
+logs_model = joblib.load(os.path.join(_dir, 'models/logs_xgb.pkl'))
 
 ################ DNN Model ################
 caco2_weights = os.path.join(_dir, 'models/Caco-2/Caco-2.ckpt')
@@ -125,3 +126,9 @@ def ppb_score(emb):
 
     ppb = model.predict(emb)
     return ppb.flatten()
+
+def logS_score(emb):
+    """
+    """
+    logs = logs_model.predict(emb)
+    return logs
