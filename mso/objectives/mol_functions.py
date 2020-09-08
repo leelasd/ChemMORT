@@ -225,3 +225,10 @@ def has_chembl_substruct(mol):
 
 
 @check_valid_mol
+def logp_score(mol):
+
+    logP = round(Descriptors.MolLogP(mol), 3)
+    return logP
+
+
+
