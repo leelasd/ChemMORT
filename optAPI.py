@@ -9,7 +9,7 @@ from new_cddd.inference import InferenceModel
 from new_cddd.hyperparameters import DEFAULT_DATA_DIR
 from mso.optimizer import BasePSOptimizer
 from mso.objectives.scoring import ScoringFunction
-from mso.objectives.mol_functions import qed_score
+from mso.objectives.mol_functions import qed_score, logP_score
 from mso.objectives.emb_functions import logD_score, ames_score
 from mso.objectives.emb_functions import caco2_score, mdck_score, ppb_score
 
@@ -54,11 +54,12 @@ class PropOptimizer:
             'Caco-2': caco2_score,
             'MDCK': mdck_score,
             'PPB': ppb_score,
+            'logP': logP_score,
             }
         
         for prop_name in self.prop_dic.keys():
             func = func_list[prop_name]
-            is_mol_func = prop_name in ['QED']
+            is_mol_func = prop_name in ['QED', 'logP']
             
             _range = self.prop_dic[prop_name]['range']
             if self.prop_dic[prop_name].get('ascending', True):
@@ -112,6 +113,7 @@ if '__main__' == __name__:
             "Caco-2": {"range":[-8,-4]},
             "MDCK": {"range":[-8, -3]},
             "PPB": {"range":[0,1]},
+            "logP": {"range":[-5,9]},
             }
         )
     

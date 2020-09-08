@@ -27,7 +27,7 @@ def check_valid_mol(func):
         if mol is not None:
             return func(mol, *args, **kwargs)
         else:
-            return -np.float('inf')
+            return -100
     return wrapper
 
 @check_valid_mol
@@ -225,9 +225,13 @@ def has_chembl_substruct(mol):
 
 
 @check_valid_mol
-def logp_score(mol):
+def logP_score(mol):
 
-    logP = round(Descriptors.MolLogP(mol), 3)
+    try:
+        logP = round(Descriptors.MolLogP(mol), 3)
+    except Exception:
+        logP = 0
+    
     return logP
 
 
