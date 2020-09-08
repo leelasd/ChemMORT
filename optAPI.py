@@ -72,7 +72,7 @@ class PropOptimizer:
                 desirability=[{"x": _range[1], "y": 0.0}, 
                               {"x": _range[0], "y": 1.0}]
             
-            allow_exceed = self.prop_dic[prop_name].get('allow_exceed', True)
+            allow_exceed = self.prop_dic[prop_name].get('allow_exceed', False)
             
             yield ScoringFunction(func=func, name=prop_name, 
                                   desirability=desirability, 
