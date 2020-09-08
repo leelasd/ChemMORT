@@ -20,6 +20,7 @@ ames_model = joblib.load(os.path.join(_dir, 'models/ames_xgb.pkl'))
 logs_model = joblib.load(os.path.join(_dir, 'models/logs_xgb.pkl'))
 hERG_model = joblib.load(os.path.join(_dir, 'models/herg_xgb.pkl'))
 liverTox_model = joblib.load(os.path.join(_dir, 'models/hepatoxicity_xgb.pkl'))
+LD50_model = joblib.load(os.path.join(_dir, 'models/ld50_xgb.pkl'))
 
 ################ DNN Model ################
 caco2_weights = os.path.join(_dir, 'models/Caco-2/Caco-2.ckpt')
@@ -146,3 +147,9 @@ def hepatoxicity_score(emb):
     """
     liverTox = liverTox_model.predict_proba(emb)[:,1]
     return liverTox
+
+def LD50_score(emb):
+    """
+    """
+    ld50 = LD50_model.predict_proba(emb)[:,1]
+    return ld50

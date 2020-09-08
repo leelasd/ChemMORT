@@ -30,6 +30,7 @@ The ChemMRAT Molecular Optimizer,  merged the Encoder, Decoder and Particle Swar
 | logS | Log of Solubility<br>\* Optimal: higher than -4 log mol/L<br>\* <10 μg/mL: Low solubility.<br>\* 10–60 μg/mL: Moderate solubility.<br>\* >60 μg/mL: High solubility | **Test Set**<br>RMSE: 0.854<br>MAE: 0.606<br>R<sup>2</sup>: 0.847<br>**5-Fold CV**<br>RMSE: 0.890<br>MAE: 0.632<br>R<sup>2</sup>: 0.820 | Basic  property | XGBoost | |
 | hERG | The probability to be hERG Blocker<br>\* The higher hERG score, the more likely to be hERG Blocker. | **Test Set**<br/>ACC: 0.799<br/>SEN: 0.840<br/>SPE: 0.715<br/>AUC: 0.855<br/>**5-Fold CV**<br/>ACC: 0.797<br/>SEN: 0.847<br/>SPE: 0.685<br/>AUC: 0.849 | Toxicity | XGBoost | |
 | Hepatoxicity | The probability of owning liver toxicity<br>\* The smaller hepatoxicity score, the less likely to be liver toxic. | **Test Set**<br/>ACC: 0.731<br/>SEN: 0.743<br/>SPE: 0.715<br/>AUC: 0.793<br/>**5-Fold CV**<br/>ACC: 0.700<br/>SEN: 0.698<br/>SPE: 0.698<br/>AUC: 0.759 | Toxicity | XGBoost | |
+| LD50 | LD50 of acute toxicity<br>\* High-toxicity: 1\~50 mg/kg.<br>\* Toxicity: 51\~500 mg/kg.<br>\* low-toxicity: 501~5000 mg/kg. | **Test Set**<br/>ACC: 0.786<br/>SEN: 0.738<br/>SPE: 0.815<br/>AUC: 0.793<br/>**5-Fold CV**<br/>ACC: 0.784<br/>SEN: 0.737<br/>SPE: 0.814<br/>AUC: 0.858 | Toxicity | XGBoost | |
 
 
 ## Dev Environment
