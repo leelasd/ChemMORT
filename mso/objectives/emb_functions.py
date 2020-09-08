@@ -18,6 +18,7 @@ _dir = os.path.dirname(__file__)
 logd_model = joblib.load(os.path.join(_dir, 'models/logD_xgb.pkl'))
 ames_model = joblib.load(os.path.join(_dir, 'models/ames_xgb.pkl'))
 logs_model = joblib.load(os.path.join(_dir, 'models/logs_xgb.pkl'))
+hERG_model = joblib.load(os.path.join(_dir, 'models/herg_xgb.pkl'))
 
 ################ DNN Model ################
 caco2_weights = os.path.join(_dir, 'models/Caco-2/Caco-2.ckpt')
@@ -132,3 +133,9 @@ def logS_score(emb):
     """
     logs = logs_model.predict(emb)
     return logs
+
+def hERG_score(emb):
+    """
+    """
+    herg = hERG_model.predict_proba(emb)[:,1]
+    return herg
