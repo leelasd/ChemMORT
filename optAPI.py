@@ -10,9 +10,9 @@ from new_cddd.hyperparameters import DEFAULT_DATA_DIR
 from mso.optimizer import BasePSOptimizer
 from mso.objectives.scoring import ScoringFunction
 from mso.objectives.mol_functions import qed_score, logP_score
-from mso.objectives.emb_functions import logD_score, logS_score, ames_score
+from mso.objectives.emb_functions import logD_score, logS_score
 from mso.objectives.emb_functions import caco2_score, mdck_score, ppb_score
-
+from mso.objectives.emb_functions import ames_score, hERG_score
 
 
 _default_model_dir = os.path.join(DEFAULT_DATA_DIR, 'default_model')
@@ -57,6 +57,7 @@ class PropOptimizer:
             'PPB': ppb_score,
             'logP': logP_score,
             'logS': logS_score,
+            'hERG': hERG_score,
             }
         
         for prop_name in self.prop_dic.keys():
@@ -110,13 +111,14 @@ if '__main__' == __name__:
         num_swarms=1,
         prop_dic={
             "QED": {"range":[0,1]},
-            "logD": {"range":[-3,8], "allow_exceed":False},
+            "logD": {"range":[-3,8]},
             "AMES": {"range":[0,1], "ascending":False},
             "Caco-2": {"range":[-8,-4]},
             "MDCK": {"range":[-8, -3]},
             "PPB": {"range":[0,1]},
             "logP": {"range":[-5,9]},
-            "logS": {"range":[-2,14]}
+            "logS": {"range":[-2,14]},
+            "hERG": {"range":[0,1], "ascending":False},
             }
         )
     
