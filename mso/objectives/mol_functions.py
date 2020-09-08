@@ -27,7 +27,7 @@ def check_valid_mol(func):
         if mol is not None:
             return func(mol, *args, **kwargs)
         else:
-            return 0
+            return -np.float('inf')
     return wrapper
 
 @check_valid_mol
@@ -212,6 +212,8 @@ except:
     reward_penalized_log_p = None
 
 fps = np.load(os.path.join(data_dir, "chembl_fps.npy"), allow_pickle=True).item()
+
+
 @check_valid_mol
 def has_chembl_substruct(mol):
     """0 for molecuels with substructures (ECFP2 that occur less often than 5 times in ChEMBL."""
@@ -220,3 +222,6 @@ def has_chembl_substruct(mol):
         return 0
     else:
         return 1
+
+
+@check_valid_mol
