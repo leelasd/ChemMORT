@@ -12,7 +12,7 @@ from mso.objectives.scoring import ScoringFunction
 from mso.objectives.mol_functions import qed_score, logP_score
 from mso.objectives.emb_functions import logD_score, logS_score
 from mso.objectives.emb_functions import caco2_score, mdck_score, ppb_score
-from mso.objectives.emb_functions import ames_score, hERG_score, hepatoxicity_score
+from mso.objectives.emb_functions import ames_score, hERG_score, hepatoxicity_score, LD50_score
 
 
 _default_model_dir = os.path.join(DEFAULT_DATA_DIR, 'default_model')
@@ -59,6 +59,7 @@ class PropOptimizer:
             'logS': logS_score,
             'hERG': hERG_score,
             'hepatoxicity': hepatoxicity_score,
+            'LD50': LD50_score,
             }
         
         for prop_name in self.prop_dic.keys():
@@ -107,7 +108,7 @@ if '__main__' == __name__:
 
 
     opt = PropOptimizer(
-        init_smiles='c1ccccc1',
+        init_smiles='Nc1ccc(O)c(C(=O)O)c1',
         num_part=200,
         num_swarms=1,
         prop_dic={
@@ -120,11 +121,12 @@ if '__main__' == __name__:
             "logP": {"range":[-5,9]},
             "logS": {"range":[-2,14]},
             "hERG": {"range":[0,1], "ascending":False},
-            # "hepatoxicity": {"range":[0,1], "ascending":False},
+            "hepatoxicity": {"range":[0,1], "ascending":False},
+            "LD50": {"range":[0,1], "ascending":False}
             }
         )
     
-    opt.opt.run(10, 5)
+    opt.opt.run(5, 5)
     
     best_sol = opt.opt.best_solutions
     
