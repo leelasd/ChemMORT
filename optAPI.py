@@ -88,11 +88,15 @@ class PropOptimizer:
                                 {"x": _range[0], "y": 1.0}]
 
             allow_exceed = self.prop_dic[prop_name].get('allow_exceed', False)
+            weight = self.prop_dic[prop_name].get('weight', 100)
 
-            yield ScoringFunction(func=func, name=prop_name,
-                                  desirability=desirability,
-                                  is_mol_func=is_mol_func,
-                                  allow_exceed=allow_exceed)
+            yield ScoringFunction(
+                func=func, name=prop_name,
+                desirability=desirability,
+                is_mol_func=is_mol_func,
+                allow_exceed=allow_exceed,
+                weight=weight,
+                )
 
     def _build_optimizer(self):
         opt = BasePSOptimizer.from_query(
@@ -100,7 +104,8 @@ class PropOptimizer:
             num_part=self.num_part,
             num_swarms=self.num_swarms,
             inference_model=self.infer_model,
-            scoring_functions=self.scoring_functions)
+            scoring_functions=self.scoring_functions,
+            )
         return opt
 
 
@@ -121,18 +126,18 @@ if '__main__' == __name__:
         num_part=200,
         num_swarms=1,
         prop_dic={
-            "QED": {"range": [0, 1]},
-            "logD": {"range": [-3, 8]},
-            "AMES": {"range": [0, 1], "ascending": False},
-            "Caco-2": {"range": [-8, -4]},
-            "MDCK": {"range": [-8, -3]},
-            "PPB": {"range": [0, 1]},
-            "logP": {"range": [-5, 9]},
-            "logS": {"range": [-2, 14]},
-            "hERG": {"range": [0, 1], "ascending": False},
-            "hepatoxicity": {"range": [0, 1], "ascending": False},
-            "LD50": {"range": [0, 1], "ascending": False}
-            "substructure": {"smiles": "c1ccccc1", "ascending": False},
+            "QED": {"range": [0, 1], "weight":100},
+            # "logD": {"range": [-3, 8], "weight":100},
+            # "AMES": {"range": [0, 1], "ascending": False, "weight":100},
+            # "Caco-2": {"range": [-8, -4], "weight":100},
+            # "MDCK": {"range": [-8, -3], "weight":100},
+            # "PPB": {"range": [0, 1], "weight":100},
+            # "logP": {"range": [-5, 9], "weight":100},
+            # "logS": {"range": [-2, 14], "weight":100},
+            # "hERG": {"range": [0, 1], "ascending": False, "weight":100},
+            # "hepatoxicity": {"range": [0, 1], "ascending": False, "weight":100},
+            # "LD50": {"range": [0, 1], "ascending": False, "weight":100}
+            "substructure": {"smiles": "c1ccccc1", "ascending": False, "weight":10},
             # "distance": {"smiles": "c1ccccc1", "ascending": False},
         }
     )
