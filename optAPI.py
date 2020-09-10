@@ -11,9 +11,10 @@ from mso.optimizer import BasePSOptimizer
 from mso.objectives.scoring import ScoringFunction
 from mso.objectives.mol_functions import qed_score, logP_score, substructure_match_score
 from mso.objectives.emb_functions import logD_score, logS_score
-from mso.objectives.emb_functions import caco2_score, mdck_score, ppb_score
+from mso.objectives.emb_functions import caco2_score, mdck_score, ppb_score, distance_score
 from mso.objectives.emb_functions import ames_score, hERG_score, hepatoxicity_score, LD50_score
 from rdkit import Chem
+import numpy as np
 from functools import partial
 
 _default_model_dir = os.path.join(DEFAULT_DATA_DIR, 'default_model')
@@ -60,17 +61,30 @@ class PropOptimizer:
             'LD50': LD50_score,
             'match': substructure_match_score,
             'unmatch': substructure_match_score,
+            'distance': distance_score
         }
 
         for prop_name in self.prop_dic.keys():
             func = func_list[prop_name]
-            is_mol_func = prop_name in ['QED', 'logP', 'match', 'unmatch']
-            partial_func = prop_name in ['match', 'unmatch']
 
-            if partial_func:
+            if prop_name not in ['match', 'unmatch', 'distance']:
+                pass
+            elif prop_name in ['match', 'unmatch']:
                 func = partial(
-                    func, query=Chem.MolFromSmarts(self.prop_dic[prop_name]['smiles'])
+                    func, query=Chem.MolFromSmarts(self.prop_dic[prop_name].get('smiles'))
                     )
+            else:
+                func = partial(
+                        func, query=infer_model.seq_to_emb(self.prop_dic[prop_name].get('smiles'))
+                    )
+
+            is_mol_func = prop_name in ['QED', 'logP', 'match', 'unmatch']
+  
+            # if partial_func == 'match':
+            #     func = partial(
+            #         func, query=Chem.MolFromSmarts(self.prop_dic[prop_name]['smiles'])
+            #         )
+
 
             _range = self.prop_dic[prop_name].get('range', [0, 1])
             if self.prop_dic[prop_name].get('ascending', True):
@@ -114,7 +128,7 @@ if '__main__' == __name__:
         num_part=200,
         num_swarms=1,
         prop_dic={
-            "QED": {"range": [0, 1]},
+            # "QED": {"range": [0, 1]},
             # "logD": {"range": [-3, 8]},
             # "AMES": {"range": [0, 1], "ascending": False},
             # "Caco-2": {"range": [-8, -4]},
@@ -125,7 +139,8 @@ if '__main__' == __name__:
             # "hERG": {"range": [0, 1], "ascending": False},
             # "hepatoxicity": {"range": [0, 1], "ascending": False},
             # "LD50": {"range": [0, 1], "ascending": False}
-            "match": {"smiles": "c1ccccc1", "allow_exceed": True},
+            # "match": {"smiles": "c1ccccc1", "allow_exceed": True},
+            "distance": {"smiles": "c1ccccc1", "ascending": False},
             # "unmatch": {"smiles": "c1ccccc1", "ascending":False, "allow_exceed": True},
         }
     )
