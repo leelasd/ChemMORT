@@ -3,6 +3,7 @@ Module that defines the ScoringFunction class.
 """
 import numpy as np
 from numpy import interp
+from scipy.interpolate import interp1d
 from functools import partial
 
 DEFAULT_DESIRABILITY = [{"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 1.0}]
@@ -71,10 +72,10 @@ class ScoringFunction:
             x.append(x[-1] + 1)
             y.append(y[-1])
             
-        left = x[0] if self.allow_exceed else 0
-        right = x[-1] if self.allow_exceed else 0
-        
-        func = partial(interp, xp=x, fp=y, left=left, right=right, period=None)
+        func = not self.allow_exceed and \
+            interp1d(x,y,bounds_error=False,fill_value=0) or \
+                interp1d(x,y,fill_value="extrapolate")
+                
         return func
 
     def __call__(self, input):
