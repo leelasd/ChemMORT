@@ -59,17 +59,16 @@ class PropOptimizer:
             'hERG': hERG_score,
             'hepatoxicity': hepatoxicity_score,
             'LD50': LD50_score,
-            'match': substructure_match_score,
-            'unmatch': substructure_match_score,
+            'substructure': substructure_match_score,
             'distance': distance_score
         }
 
         for prop_name in self.prop_dic.keys():
             func = func_list[prop_name]
 
-            if prop_name not in ['match', 'unmatch', 'distance']:
+            if prop_name not in ['substructure', 'distance']:
                 pass
-            elif prop_name in ['match', 'unmatch']:
+            elif prop_name == 'substructure':
                 func = partial(
                     func, query=Chem.MolFromSmarts(self.prop_dic[prop_name].get('smiles'))
                     )
@@ -78,14 +77,8 @@ class PropOptimizer:
                         func, query=infer_model.seq_to_emb(self.prop_dic[prop_name].get('smiles'))
                     )
 
-            is_mol_func = prop_name in ['QED', 'logP', 'match', 'unmatch']
+            is_mol_func = prop_name in ['QED', 'logP', 'substructure']
   
-            # if partial_func == 'match':
-            #     func = partial(
-            #         func, query=Chem.MolFromSmarts(self.prop_dic[prop_name]['smiles'])
-            #         )
-
-
             _range = self.prop_dic[prop_name].get('range', [0, 1])
             if self.prop_dic[prop_name].get('ascending', True):
                 desirability = [{"x": _range[0], "y": 0.0},
@@ -128,20 +121,19 @@ if '__main__' == __name__:
         num_part=200,
         num_swarms=1,
         prop_dic={
-            # "QED": {"range": [0, 1]},
-            # "logD": {"range": [-3, 8]},
-            # "AMES": {"range": [0, 1], "ascending": False},
-            # "Caco-2": {"range": [-8, -4]},
-            # "MDCK": {"range": [-8, -3]},
-            # "PPB": {"range": [0, 1]},
-            # "logP": {"range": [-5, 9]},
-            # "logS": {"range": [-2, 14]},
-            # "hERG": {"range": [0, 1], "ascending": False},
-            # "hepatoxicity": {"range": [0, 1], "ascending": False},
-            # "LD50": {"range": [0, 1], "ascending": False}
-            # "match": {"smiles": "c1ccccc1", "allow_exceed": True},
-            "distance": {"smiles": "c1ccccc1", "ascending": False},
-            # "unmatch": {"smiles": "c1ccccc1", "ascending":False, "allow_exceed": True},
+            "QED": {"range": [0, 1]},
+            "logD": {"range": [-3, 8]},
+            "AMES": {"range": [0, 1], "ascending": False},
+            "Caco-2": {"range": [-8, -4]},
+            "MDCK": {"range": [-8, -3]},
+            "PPB": {"range": [0, 1]},
+            "logP": {"range": [-5, 9]},
+            "logS": {"range": [-2, 14]},
+            "hERG": {"range": [0, 1], "ascending": False},
+            "hepatoxicity": {"range": [0, 1], "ascending": False},
+            "LD50": {"range": [0, 1], "ascending": False}
+            "substructure": {"smiles": "c1ccccc1", "ascending": False},
+            # "distance": {"smiles": "c1ccccc1", "ascending": False},
         }
     )
 
