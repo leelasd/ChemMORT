@@ -38,7 +38,7 @@ def approximate_res(func):
     return wrapper
 
 
-def distance_score(emb, target, metric="cosine"):
+def distance_score(emb, query):
     """
     Function tha calculates the distance between an input molecular embedding and a target molecular embedding.
     :param x: input molecular embedding
@@ -46,7 +46,7 @@ def distance_score(emb, target, metric="cosine"):
     :param metric: The metric used by scipy.spatial.distance.cdist to compute the distance in space.
     :return: The distance between input and target.
     """
-    score = cdist(emb, target, metric).flatten()
+    score = cdist(emb, query, metric="cosine").flatten()
     return score
 
 
