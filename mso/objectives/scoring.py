@@ -2,7 +2,8 @@
 Module that defines the ScoringFunction class.
 """
 import numpy as np
-from scipy.interpolate import interp1d
+from numpy import interp
+from functools import partial
 
 DEFAULT_DESIRABILITY = [{"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 1.0}]
 
@@ -11,8 +12,8 @@ class ScoringFunction:
     Class that handles the integration of functions used to evaluate the particles/molecules
     in the particle swarm.
     """
-    def __init__(self, func, name, description=None, desirability=None, truncate_left=True,
-                 truncate_right=True, weight=100, is_mol_func=False, allow_exceed=False):
+    def __init__(self, func, name, description=None, desirability=None, truncate_left=False,
+                 truncate_right=False, weight=100, is_mol_func=False, allow_exceed=False):
         """
         :param func: A function that takes either a single RDKit mol object as input or an array
             of particle positions (num_particles, ndim) in the CDDD space as input and outputs a
@@ -46,7 +47,7 @@ class ScoringFunction:
             truncate_left=truncate_left,
             truncate_right=truncate_right)
 
-    def _create_desirability_function(self, desirability, truncate_left=True, truncate_right=True):
+    def _create_desirability_function(self, desirability, truncate_left=False, truncate_right=False):
         """
         Method that returns a function that calculates the desirability score for a given input
         unscaled score. Linearly interpolates between points provided.
@@ -69,7 +70,12 @@ class ScoringFunction:
         if truncate_right:
             x.append(x[-1] + 1)
             y.append(y[-1])
-        return interp1d(x, y, fill_value='extrapolate') if self.allow_exceed else interp1d(x, y)
+            
+        left = x[0] if self.allow_exceed else 0
+        right = x[-1] if self.allow_exceed else 0
+        
+        func = partial(interp, xp=x, fp=y, left=left, right=right, period=None)
+        return func
 
     def __call__(self, input):
         """
@@ -88,6 +94,7 @@ class ScoringFunction:
             unscaled_scores = np.array([self.func(mol) for mol in input])
         else:
             unscaled_scores = self.func(input)
+        
         try:
             desirability_scores = self.desirability_function(unscaled_scores)
         except ValueError:
