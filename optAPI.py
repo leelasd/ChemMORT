@@ -70,7 +70,7 @@ class PropOptimizer:
                 pass
             elif prop_name == 'substructure':
                 func = partial(
-                    func, query=Chem.MolFromSmarts(self.prop_dic[prop_name].get('smiles'))
+                    func, query=Chem.MolFromSmarts(self.prop_dic[prop_name].get('smarts'))
                     )
             else:
                 func = partial(
@@ -135,10 +135,10 @@ if '__main__' == __name__:
             # "logP": {"range": [-5, 9], "weight":100},
             # "logS": {"range": [-2, 14], "weight":100},
             # "hERG": {"range": [0, 1], "ascending": False, "weight":100},
-            # "hepatoxicity": {"range": [0, 1], "ascending": False, "weight":100},
+            "hepatoxicity": {"range": [0, 1], "ascending": False, "weight":100},
             # "LD50": {"range": [0, 1], "ascending": False, "weight":100}
-            "substructure": {"smiles": "c1ccccc1", "ascending": False, "weight":10},
-            # "distance": {"smiles": "c1ccccc1", "ascending": False},
+            "substructure": {"smarts": "c1ccccc1", "ascending": False, "weight":100},
+            # "distance": {"smiles": "Nc1ccc(O)c(C(=O)O)c1", "ascending": True, "weight":100},
         }
     )
 
