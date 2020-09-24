@@ -126,7 +126,7 @@ if '__main__' == __name__:
         num_part=200,
         num_swarms=1,
         prop_dic={
-            "QED": {"range": [0, 1], "weight":100},
+            # "QED": {"range": [0, 1], "weight":100},
             # "logD": {"range": [-3, 8], "weight":100},
             # "AMES": {"range": [0, 1], "ascending": False, "weight":100},
             # "Caco-2": {"range": [-8, -4], "weight":100},
@@ -135,10 +135,10 @@ if '__main__' == __name__:
             # "logP": {"range": [-5, 9], "weight":100},
             # "logS": {"range": [-2, 14], "weight":100},
             # "hERG": {"range": [0, 1], "ascending": False, "weight":100},
-            "hepatoxicity": {"range": [0, 1], "ascending": False, "weight":100},
-            # "LD50": {"range": [0, 1], "ascending": False, "weight":100}
-            "substructure": {"smarts": "c1ccccc1", "ascending": False, "weight":100},
-            # "distance": {"smiles": "Nc1ccc(O)c(C(=O)O)c1", "ascending": True, "weight":100},
+            # "hepatoxicity": {"range": [0, 1], "ascending": False, "weight":100},
+            # "LD50": {"range": [0, 1], "ascending": False, "weight":100},
+            # "substructure": {"smarts": "c1ccccc1", "ascending": False, "weight":100},
+            "distance": {"smiles": "Nc1ccc(O)c(C(=O)O)c1", "ascending": True, "weight":100},
         }
     )
 
