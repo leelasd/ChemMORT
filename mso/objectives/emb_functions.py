@@ -2,10 +2,12 @@
 Modeule with scoring functions that take molecular CDDD embeddings (positions of the particles in the swarm) as input.
 """
 from scipy.spatial.distance import cdist
+from rdkit import Chem
 from mso.data import load_predict_model_from_pkl
 from functools import wraps
 import joblib
 import os
+import numpy as np
 
 from tensorflow.keras.layers import Input, Dense, Dropout, BatchNormalization
 # from tensorflow.keras.layers import Multiply, Concatenate, Add
@@ -27,6 +29,19 @@ caco2_weights = os.path.join(_dir, 'models/Caco-2/Caco-2.ckpt')
 mdck_weights = os.path.join(_dir, 'models/MDCk/MDCK.ckpt')
 ppb_weights = os.path.join(_dir, 'models/PPB/ppb.ckpt')
 
+
+def check_valid_smiles(swarm):
+    def calculate_score(func):
+        @wraps(func)
+        def wrapper(swarm, *args, **kwargs):
+            bo = np.array([Chem.MolFromSmiles(smi) is not None for smi in swarm.smiles])
+            score = func(swarm.x, *args, **kwargs)
+            score = np.where(bo, score, -100)
+            return score
+        return wrapper
+    return calculate_score
+
+
 def approximate_res(func):
     """
     Decorator function that accurate to three decimal places
@@ -37,7 +52,7 @@ def approximate_res(func):
         return round(float(func(*args, **kwargs)), 3)
     return wrapper
 
-
+@check_valid_smiles(swarm=None)
 def distance_score(emb, query):
     """
     Function tha calculates the distance between an input molecular embedding and a target molecular embedding.
@@ -52,6 +67,7 @@ def distance_score(emb, query):
 
 # reg score
 # @approximate_res
+@check_valid_smiles(swarm=None)
 def logD_score(emb):
     """
     Measuring the logD of molecule
@@ -69,6 +85,7 @@ def logD_score(emb):
     logD = logd_model.predict(emb)
     return logD
 
+@check_valid_smiles(swarm=None)
 def ames_score(emb):
     """
     Measure the ames positive probability of molecule,
@@ -88,6 +105,7 @@ def ames_score(emb):
     ames = ames_model.predict_proba(emb)[:,1]
     return ames
 
+@check_valid_smiles(swarm=None)
 def caco2_score(emb):
     """
     """
@@ -102,6 +120,7 @@ def caco2_score(emb):
     caco2 = model.predict(emb)
     return caco2.flatten()
 
+@check_valid_smiles(swarm=None)
 def mdck_score(emb):
     """
     """
@@ -116,6 +135,7 @@ def mdck_score(emb):
     mdck = model.predict(emb)
     return mdck.flatten()
 
+@check_valid_smiles(swarm=None)
 def ppb_score(emb):
     """
     """
@@ -130,24 +150,28 @@ def ppb_score(emb):
     ppb = model.predict(emb)
     return ppb.flatten()
 
+@check_valid_smiles(swarm=None)
 def logS_score(emb):
     """
     """
     logs = logs_model.predict(emb)
     return logs
 
+@check_valid_smiles(swarm=None)
 def hERG_score(emb):
     """
     """
     herg = hERG_model.predict_proba(emb)[:,1]
     return herg
 
+@check_valid_smiles(swarm=None)
 def hepatoxicity_score(emb):
     """
     """
     liverTox = liverTox_model.predict_proba(emb)[:,1]
     return liverTox
 
+@check_valid_smiles(swarm=None)
 def LD50_score(emb):
     """
     """
