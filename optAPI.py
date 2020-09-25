@@ -128,27 +128,29 @@ if '__main__' == __name__:
 
     :param prop_dic: Dictionary of property condition to be optimized
     """
-
+    
+    init_smiles = 'OC1=NN=C(CC2=CC(C(=O)N3CCN(CC3)C(=O)C3CC3)=C(F)C=C2)C2=CC=CC=C12'
+        
     opt = PropOptimizer(
-        init_smiles='Nc1ccc(O)c(C(=O)O)c1', # logD=0.832281
+        init_smiles=init_smiles, # logD=0.832281
         num_part=200,
         num_swarms=1,
         prop_dic={
             "QED": {"range": [0, 1], "weight":100},
             # "logD": {"range": [-3, 8], "weight":100},
-            "logD": {"range": [2, 2.3], "weight":100, "monotone":False},
+            # "logD": {"range": [2, 2.3], "weight":100, "monotone":False},
             # "AMES": {"range": [0, 1], "ascending": False, "weight":100},
             # "Caco-2": {"range": [-8, -4], "weight":100},
             # "MDCK": {"range": [-8, -3], "weight":100},
             # "PPB": {"range": [0, 1], "weight":100},
             # "logP": {"range": [-5, 9], "weight":100},
-            # "logS": {"range": [-2, 14], "weight":100},
+            "logS": {"range": [-2, 14], "weight":100},
             # "hERG": {"range": [0, 1], "ascending": False, "weight":100},
             # "hepatoxicity": {"range": [0, 1], "ascending": False, "weight":100},
             # "LD50": {"range": [0, 1], "ascending": False, "weight":100},
-            "substructure": {"smarts": "c1ccccc1", "ascending": False, "weight":100},
-            "similarity": {"range": [0, 0.1], "smiles": "Nc1ccc(O)c(C(=O)O)c1", 
-                           "ascending": False, "weight": 100, "monotone": False},
+            "substructure": {"smarts": "a1aaaa(-[#6](=[#8])-[#7;H0,H1][*])a1", "ascending": True, "weight":200},
+            "similarity": {"range": [0.4, 0.7], "smiles": "OC1=NN=C(CC2=CC(C(=O)N3CCN(CC3)C(=O)C3CC3)=C(F)C=C2)C2=CC=CC=C12", 
+                           "ascending": False, "weight": 200, "monotone": False},
         }
     )
 
