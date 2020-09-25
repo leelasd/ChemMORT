@@ -12,10 +12,25 @@ from rdkit.Chem import Descriptors, AllChem
 from rdkit.Chem.Descriptors import qed, MolLogP
 from rdkit import DataStructs
 
+from functools import partial
+from rdkit.Chem.rdMolDescriptors import GetMorganFingerprintAsBitVect
+from rdkit.Chem.AtomPairs.Pairs import GetAtomPairFingerprintAsBitVect
+from rdkit.Chem.rdmolops import RDKFingerprint
+from rdkit.Chem import MACCSkeys
+
 
 smarts = pd.read_csv(os.path.join(data_dir, "sure_chembl_alerts.txt"), header=None, sep='\t')[1].tolist()
 alert_mols = [Chem.MolFromSmarts(smart) for smart in smarts if Chem.MolFromSmarts(smart) is not None]
-    
+
+
+fpDict = {
+    'ECFP': partial(GetMorganFingerprintAsBitVect, radius=2, nBits=1024),
+    'MACCS': MACCSkeys,
+    'Daylight': partial(RDKFingerprint, minPath=1, maxPath=7, fpSize=2048),
+    'AtomPair': GetAtomPairFingerprintAsBitVect,
+}
+
+
 def check_valid_mol(func):
     """
     Decorator function that checks if a mol object is None (resulting from a non-processable SMILES string)
@@ -234,5 +249,11 @@ def logP_score(mol):
     
     return logP
 
+@check_valid_mol
+def similarity_score(mol, targetFP, ftype='ECFP', **kwgrs):
+
+    fp = fpDict[ftype](mol, **kwgrs)
+    score = DataStructs.FingerprintSimilarity(fp, targetFP)
+    return score
 
 

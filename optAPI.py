@@ -10,6 +10,7 @@ from new_cddd.hyperparameters import DEFAULT_DATA_DIR
 from mso.optimizer import BasePSOptimizer
 from mso.objectives.scoring import ScoringFunction
 from mso.objectives.mol_functions import qed_score, logP_score, substructure_match_score
+from mso.objectives.mol_functions import substructure_match_score, similarity_score, fpDict
 from mso.objectives.emb_functions import logD_score, logS_score
 from mso.objectives.emb_functions import caco2_score, mdck_score, ppb_score, distance_score
 from mso.objectives.emb_functions import ames_score, hERG_score, hepatoxicity_score, LD50_score
@@ -60,37 +61,43 @@ class PropOptimizer:
             'hepatoxicity': hepatoxicity_score,
             'LD50': LD50_score,
             'substructure': substructure_match_score,
-            'distance': distance_score
+            # 'distance': distance_score,
+            'similarity': similarity_score
         }
 
         for prop_name in self.prop_dic.keys():
             func = func_list[prop_name]
+            prop = self.prop_dic[prop_name]
 
-            if prop_name not in ['substructure', 'distance']:
+            if prop_name not in ['substructure', 'similarity']:
                 pass
             elif prop_name == 'substructure':
                 func = partial(
-                    func, query=Chem.MolFromSmarts(self.prop_dic[prop_name].get('smarts'))
+                    func, query=Chem.MolFromSmarts(prop.get('smarts'))
                     )
             else:
+                targetMol = Chem.MolFromSmiles(prop.get('smiles'))
+                ftype = prop.get('ftype', 'ECFP')
+                targetFP = fpDict[ftype](targetMol)
+                
                 func = partial(
-                        func, query=infer_model.seq_to_emb(self.prop_dic[prop_name].get('smiles'))
+                        func, targetFP=targetFP, ftype=ftype
                     )
 
-            is_mol_func = prop_name in ['QED', 'logP', 'substructure']
+            is_mol_func = prop_name in ['QED', 'logP', 'substructure', 'similarity']
   
-            _range = self.prop_dic[prop_name].get('range', [0, 1])
-            if self.prop_dic[prop_name].get('ascending', True):
+            _range = prop.get('range', [0, 1])
+            if not prop.get('monotone', True) or prop.get('ascending', True):
                 desirability = [{"x": _range[0], "y": 0.0},
                                 {"x": _range[1], "y": 1.0}]
             else:
                 desirability = [{"x": _range[1], "y": 0.0},
                                 {"x": _range[0], "y": 1.0}]
 
-            allow_exceed = self.prop_dic[prop_name].get('allow_exceed', False)
-            weight = self.prop_dic[prop_name].get('weight', 100)
-            
-            monotone = self.prop_dic[prop_name].get('monotone', True)
+            allow_exceed = prop.get('allow_exceed', False)
+            weight = prop.get('weight', 100)   
+            monotone = prop.get('monotone', True)
+
             yield ScoringFunction(
                 func=func, name=prop_name,
                 desirability=desirability,
@@ -112,7 +119,6 @@ class PropOptimizer:
 
 
 if '__main__' == __name__:
-
     """PARAMETERS
 
     :param init_smiles: A List of SMILES which each define the molecule which acts as starting
@@ -140,8 +146,9 @@ if '__main__' == __name__:
             # "hERG": {"range": [0, 1], "ascending": False, "weight":100},
             # "hepatoxicity": {"range": [0, 1], "ascending": False, "weight":100},
             # "LD50": {"range": [0, 1], "ascending": False, "weight":100},
-            # "substructure": {"smarts": "c1ccccc1", "ascending": False, "weight":100},
-            # "distance": {"smiles": "Nc1ccc(O)c(C(=O)O)c1", "ascending": True, "weight":100},
+            "substructure": {"smarts": "c1ccccc1", "ascending": False, "weight":100},
+            "similarity": {"range": [0, 0.1], "smiles": "Nc1ccc(O)c(C(=O)O)c1", 
+                           "ascending": False, "weight": 100, "monotone": False},
         }
     )
 
