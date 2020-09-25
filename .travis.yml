@@ -51,6 +51,9 @@ install:
   - conda install -c conda-forge xgboost 
   - conda install scipy
 
+before_script:
+  - git lfs pull
+
 script:
   - conda activate
   - python ./optAPI.py
