@@ -14,7 +14,8 @@ class ScoringFunction:
     in the particle swarm.
     """
     def __init__(self, func, name, description=None, desirability=None, truncate_left=False,
-                 truncate_right=False, weight=100, is_mol_func=False, allow_exceed=False):
+                 truncate_right=False, weight=100, is_mol_func=False, allow_exceed=False, 
+                 monotone=True):
         """
         :param func: A function that takes either a single RDKit mol object as input or an array
             of particle positions (num_particles, ndim) in the CDDD space as input and outputs a
@@ -45,10 +46,11 @@ class ScoringFunction:
         self.allow_exceed = allow_exceed
         self.desirability_function = self._create_desirability_function(
             self._desirability,
+            monotone=monotone,
             truncate_left=truncate_left,
             truncate_right=truncate_right)
 
-    def _create_desirability_function(self, desirability, truncate_left=False, truncate_right=False):
+    def _create_desirability_function(self, desirability, monotone=True, truncate_left=False, truncate_right=False):
         """
         Method that returns a function that calculates the desirability score for a given input
         unscaled score. Linearly interpolates between points provided.
@@ -71,11 +73,15 @@ class ScoringFunction:
         if truncate_right:
             x.append(x[-1] + 1)
             y.append(y[-1])
-            
-        func = not self.allow_exceed and \
-            interp1d(x,y,bounds_error=False,fill_value=0) or \
-                interp1d(x,y,fill_value="extrapolate")
-                
+        
+        if monotone:
+            func = not self.allow_exceed and \
+                interp1d(x,y,bounds_error=False,fill_value=0) or \
+                    interp1d(x,y,fill_value="extrapolate")
+        else:
+            assert x[0] < x[1]
+            func = lambda num: ((x[0]<=num) & (num<=x[1])).astype(np.float32)
+
         return func
 
     def __call__(self, input):
