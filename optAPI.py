@@ -89,12 +89,14 @@ class PropOptimizer:
 
             allow_exceed = self.prop_dic[prop_name].get('allow_exceed', False)
             weight = self.prop_dic[prop_name].get('weight', 100)
-
+            
+            monotone = self.prop_dic[prop_name].get('monotone', True)
             yield ScoringFunction(
                 func=func, name=prop_name,
                 desirability=desirability,
                 is_mol_func=is_mol_func,
                 allow_exceed=allow_exceed,
+                monotone=monotone,
                 weight=weight,
                 )
 
@@ -122,12 +124,13 @@ if '__main__' == __name__:
     """
 
     opt = PropOptimizer(
-        init_smiles='Nc1ccc(O)c(C(=O)O)c1',
+        init_smiles='Nc1ccc(O)c(C(=O)O)c1', # logD=0.832281
         num_part=200,
         num_swarms=1,
         prop_dic={
-            # "QED": {"range": [0, 1], "weight":100},
+            "QED": {"range": [0, 1], "weight":100},
             # "logD": {"range": [-3, 8], "weight":100},
+            "logD": {"range": [2, 2.3], "weight":100, "monotone":False},
             # "AMES": {"range": [0, 1], "ascending": False, "weight":100},
             # "Caco-2": {"range": [-8, -4], "weight":100},
             # "MDCK": {"range": [-8, -3], "weight":100},
@@ -138,13 +141,14 @@ if '__main__' == __name__:
             # "hepatoxicity": {"range": [0, 1], "ascending": False, "weight":100},
             # "LD50": {"range": [0, 1], "ascending": False, "weight":100},
             # "substructure": {"smarts": "c1ccccc1", "ascending": False, "weight":100},
-            "distance": {"smiles": "Nc1ccc(O)c(C(=O)O)c1", "ascending": True, "weight":100},
+            # "distance": {"smiles": "Nc1ccc(O)c(C(=O)O)c1", "ascending": True, "weight":100},
         }
     )
 
     opt.opt.run(5, 5)
 
+    init_sol = opt.opt.init_solution
     best_sol = opt.opt.best_solutions
-
-    print(type(best_sol))
+    
+    print(init_sol)
     print(best_sol)
