@@ -51,8 +51,7 @@ install:
   - conda install -c conda-forge xgboost 
   - conda install scipy
 
-before_script:
-  - git lfs pull
+before_script: git lfs pull
 
 script:
   - conda activate
@@ -60,6 +59,6 @@ script:
   # - coverage run ./tests/Carc/testPath.py --cov=codecov
   # - coverage run ./tests/Carc/testFg.py --cov=codecov
   # - coverage run ./tests/ScoRepresent_test.py --cov=codecov
-  
+
 after_success:
   - pass
