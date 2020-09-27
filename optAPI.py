@@ -22,10 +22,48 @@ _default_model_dir = os.path.join(DEFAULT_DATA_DIR, 'default_model')
 model_dir = _default_model_dir
 
 infer_model = InferenceModel(
-    model_dir=model_dir,
-    use_gpu=False,
-    batch_size=128,
-    cpu_threads=4,)
+        model_dir=model_dir,
+        use_gpu=False,
+        batch_size=128,
+        cpu_threads=4
+    )
+
+
+func_list = {
+    'QED': qed_score,
+    'logD': logD_score,
+    'AMES': ames_score,
+    'Caco-2': caco2_score,
+    'MDCK': mdck_score,
+    'PPB': ppb_score,
+    'logP': logP_score,
+    'logS': logS_score,
+    'hERG': hERG_score,
+    'hepatoxicity': hepatoxicity_score,
+    'LD50': LD50_score,
+    'substructure': substructure_match_score,
+    # 'distance': distance_score,
+    'similarity': similarity_score,
+    'synth': sa_score,
+}
+
+
+prop_domain = {
+    'QED': [0, 1],
+    'logD': [-3, 8],
+    'AMES': [0, 1],
+    'Caco-2': [-8, -4],
+    'MDCK': [-8, -3],
+    'PPB': [0, 1],
+    'logP': [-5, 9],
+    'logS': [-2, 14],
+    'hERG': [0, 1],
+    'hepatoxicity': [0, 1],
+    'LD50': [0, 1],
+    'substructure': [0, 1],
+    'similarity': [0, 1],
+    'synth': [0, 10],
+}
 
 
 class PropOptimizer:
@@ -48,23 +86,7 @@ class PropOptimizer:
         # self._build_optimizer()
 
     def _build_scoring_functions(self):
-        func_list = {
-            'QED': qed_score,
-            'logD': logD_score,
-            'AMES': ames_score,
-            'Caco-2': caco2_score,
-            'MDCK': mdck_score,
-            'PPB': ppb_score,
-            'logP': logP_score,
-            'logS': logS_score,
-            'hERG': hERG_score,
-            'hepatoxicity': hepatoxicity_score,
-            'LD50': LD50_score,
-            'substructure': substructure_match_score,
-            # 'distance': distance_score,
-            'similarity': similarity_score,
-            'synth': sa_score,
-        }
+        
 
         for prop_name in self.prop_dic.keys():
             func = func_list[prop_name]
@@ -87,13 +109,21 @@ class PropOptimizer:
 
             is_mol_func = prop_name in ['QED', 'logP', 'substructure', 'similarity', 'synth']
   
-            _range = prop.get('range', [0, 1])
-            if not prop.get('monotone', True) or prop.get('ascending', True):
-                desirability = [{"x": _range[0], "y": 0.0},
-                                {"x": _range[1], "y": 1.0}]
+            _range = prop.get('range', prop_domain[prop_name])
+
+            if prop.get('monotone', True):
+                if prop.get('ascending', True):
+                    desirability = [{"x": _range[0], "y": 0.0},
+                                    {"x": _range[1], "y": 1.0}]
+                else:
+                    desirability = [{"x": _range[1], "y": 0.0},
+                                    {"x": _range[0], "y": 1.0}]
             else:
-                desirability = [{"x": _range[1], "y": 0.0},
-                                {"x": _range[0], "y": 1.0}]
+                domain = prop_domain[prop_name]
+                desirability = [{"x": _range[0], "y": 1.0},
+                                {"x": _range[1], "y": 1.0},
+                                {"x": domain[0]-0.01, "y": 0},
+                                {"x": domain[1]+0.01, "y": 0}]
 
             allow_exceed = prop.get('allow_exceed', False)
             weight = prop.get('weight', 100)   
@@ -156,7 +186,7 @@ if '__main__' == __name__:
         }
     )
 
-    opt.opt.run(5, 5)
+    opt.opt.run(20, 5)
 
     init_sol = opt.opt.init_solution
     best_sol = opt.opt.best_solutions
