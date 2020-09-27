@@ -9,7 +9,7 @@ from new_cddd.inference import InferenceModel
 from new_cddd.hyperparameters import DEFAULT_DATA_DIR
 from mso.optimizer import BasePSOptimizer
 from mso.objectives.scoring import ScoringFunction
-from mso.objectives.mol_functions import qed_score, logP_score, substructure_match_score
+from mso.objectives.mol_functions import qed_score, logP_score, substructure_match_score, sa_score
 from mso.objectives.mol_functions import substructure_match_score, similarity_score, fpDict
 from mso.objectives.emb_functions import logD_score, logS_score
 from mso.objectives.emb_functions import caco2_score, mdck_score, ppb_score, distance_score
@@ -62,7 +62,8 @@ class PropOptimizer:
             'LD50': LD50_score,
             'substructure': substructure_match_score,
             # 'distance': distance_score,
-            'similarity': similarity_score
+            'similarity': similarity_score,
+            'synth': sa_score,
         }
 
         for prop_name in self.prop_dic.keys():
@@ -84,7 +85,7 @@ class PropOptimizer:
                         func, targetFP=targetFP, ftype=ftype
                     )
 
-            is_mol_func = prop_name in ['QED', 'logP', 'substructure', 'similarity']
+            is_mol_func = prop_name in ['QED', 'logP', 'substructure', 'similarity', 'synth']
   
             _range = prop.get('range', [0, 1])
             if not prop.get('monotone', True) or prop.get('ascending', True):
@@ -151,6 +152,7 @@ if '__main__' == __name__:
             "substructure": {"smarts": "a1aaaa(-[#6](=[#8])-[#7;H0,H1][*])a1", "ascending": True, "weight":200},
             "similarity": {"range": [0.4, 0.7], "smiles": "OC1=NN=C(CC2=CC(C(=O)N3CCN(CC3)C(=O)C3CC3)=C(F)C=C2)C2=CC=CC=C12", 
                            "ascending": False, "weight": 200, "monotone": False},
+            "synth": {"range": [0, 3], "monotone": False},
         }
     )
 

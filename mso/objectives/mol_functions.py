@@ -11,6 +11,11 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors, AllChem
 from rdkit.Chem.Descriptors import qed, MolLogP
 from rdkit import DataStructs
+from rdkit import RDConfig
+import sys
+sys.path.append(RDConfig.RDContribDir)
+from SA_Score import sascorer
+
 
 from functools import partial
 from rdkit.Chem.rdMolDescriptors import GetMorganFingerprintAsBitVect
@@ -257,3 +262,8 @@ def similarity_score(mol, targetFP, ftype='ECFP', **kwgrs):
     return score
 
 
+@check_valid_mol
+def sa_score(mol):
+
+    score = sascorer.calculateScore(mol)
+    return score
