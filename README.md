@@ -20,7 +20,7 @@ The ChemMRAT Molecular Optimizer,  merged the Encoder, Decoder and Particle Swar
 
 | Endpoint | Description | Performance | Type | Method | Dataset |
 | :------: | :--- | :--- | :--- | :--- | ---- |
-| logD<sub>7.4</sub>  | Log of the octanol/water distribution coefficient at pH<sub>7.4</sub>.<br>\* Optimal: 1~3 | **Test Set**<br>RMSE: 0.647<br>MAE: 0.491<br>R<sup>2</sup>: 0.778<br>**5-Fold CV**<br>RMSE: 0.648<br>MAE: 0.494<br>R<sup>2</sup>: 0.780 | Basic  property | XGBoost |      |
+| logD<sub>7.4</sub>  | Log of the octanol/water distribution coefficient at pH<sub>7.4</sub>.<br>\* Optimal: 1~3 | **Test Set**<br>RMSE: 0.647<br>MAE: 0.491<br>R<sup>2</sup>: 0.778<br>**5-Fold CV**<br>RMSE: 0.562±0.009<br>MAE: 0.428±0.13<br>R<sup>2</sup>: 0.834±0.005 | Basic  property | XGBoost |      |
 | AMES   | The probability to be positive in Ames test. <br>\* The smaller AMES score, the less likely to be AMES positive. | **Test Set**<br>ACC: 0.809<br>SEN: 0.836<br>SPE: 0.777<br>AUC: 0.886<br>**5-Fold CV**<br>ACC: 0.808<br>SEN: 0.833<br>SPE: 0.778<br>AUC: 0.888 | Toxicity | XGBoost |      |
 | Caco-2 | Papp (Caco-2 Permeability)<br> Optimal: higher than -5.15 Log unit or -4.70 or -4.80 | **Test Set**<br>RMSE: 0.307<br>MAE: 0.236<br>R<sup>2</sup>: 0.777<br>**5-Fold CV**<br>RMSE: 0.314<br>MAE: 0.234<br>R<sup>2</sup>: 0.750 | Absorption | DNN |      |
 | MDCK | Papp (MDCK Permeability)<br> | **Test Set**<br>RMSE: 0.261<br>MAE: 0.195<br>R<sup>2</sup>: 0.748<br>**5-Fold CV**<br>RMSE: 0.313<br>MAE: 0.220<br>R<sup>2</sup>: 0.663 | Absorption | DNN | |

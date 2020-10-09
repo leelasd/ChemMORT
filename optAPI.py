@@ -167,7 +167,7 @@ if '__main__' == __name__:
         num_part=200,
         num_swarms=1,
         prop_dic={
-            "QED": {"range": [0, 1], "weight":100},
+            "QED": {"range": [0, 1], "weight":80},
             # "logD": {"range": [-3, 8], "weight":100},
             # "logD": {"range": [2, 2.3], "weight":100, "monotone":False},
             # "AMES": {"range": [0, 1], "ascending": False, "weight":100},
@@ -175,21 +175,25 @@ if '__main__' == __name__:
             # "MDCK": {"range": [-8, -3], "weight":100},
             # "PPB": {"range": [0, 1], "weight":100},
             # "logP": {"range": [-5, 9], "weight":100},
-            "logS": {"range": [-2, 14], "weight":100},
+            "logS": {"range": [4, 10], "weight":150},
             # "hERG": {"range": [0, 1], "ascending": False, "weight":100},
             # "hepatoxicity": {"range": [0, 1], "ascending": False, "weight":100},
             # "LD50": {"range": [0, 1], "ascending": False, "weight":100},
-            "substructure": {"smarts": "a1aaaa(-[#6](=[#8])-[#7;H0,H1][*])a1", "ascending": True, "weight":200},
+            "substructure": {"smarts": "a1aaaa(-[#6](=[#8])-[#7;H0,H1][*])a1", "ascending": True, "weight":100},
             "similarity": {"range": [0.4, 0.7], "smiles": "OC1=NN=C(CC2=CC(C(=O)N3CCN(CC3)C(=O)C3CC3)=C(F)C=C2)C2=CC=CC=C12", 
-                           "ascending": False, "weight": 200, "monotone": False},
+                           "ascending": False, "weight": 100, "monotone": False},
             "synth": {"range": [0, 3], "monotone": False},
         }
     )
 
-    opt.opt.run(20, 5)
+    opt.opt.run(10, 5)
 
     init_sol = opt.opt.init_solution
     best_sol = opt.opt.best_solutions
     
     print(init_sol)
     print(best_sol)
+
+    import pandas as pd
+    out = pd.concat((init_sol, best_sol))
+    out.to_csv('demo3.csv', index=False)
