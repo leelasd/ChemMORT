@@ -4,9 +4,9 @@ import os
 # import argparse
 # import pandas as pd
 # import tensorflow as tf
-from new_cddd.inference import InferenceModel
+from cddd.inference import InferenceModel
 # from new_cddd.preprocessing import preprocess_smiles, randomize_smile
-from new_cddd.hyperparameters import DEFAULT_DATA_DIR
+# from new_cddd.hyperparameters import DEFAULT_DATA_DIR
 from mso.optimizer import BasePSOptimizer
 from mso.objectives.scoring import ScoringFunction
 from mso.objectives.mol_functions import qed_score, logP_score, substructure_match_score, sa_score
@@ -18,11 +18,11 @@ from rdkit import Chem
 import numpy as np
 from functools import partial
 
-_default_model_dir = os.path.join(DEFAULT_DATA_DIR, 'default_model')
-model_dir = _default_model_dir
+# _default_model_dir = os.path.join(DEFAULT_DATA_DIR, 'default_model')
+# model_dir = _default_model_dir
 
 infer_model = InferenceModel(
-        model_dir=model_dir,
+        # model_dir=model_dir,
         use_gpu=False,
         batch_size=128,
         cpu_threads=4
