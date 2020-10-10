@@ -32,6 +32,15 @@ The ChemMRAT Molecular Optimizer,  merged the Encoder, Decoder and Particle Swar
 | Hepatoxicity | The probability of owning liver toxicity<br>\* The smaller hepatoxicity score, the less likely to be liver toxic. | **Test Set**<br/>ACC: 0.729±0.016<br/>SEN: 0.732±0.019<br/>SPE: 0.724±0.044<br/>AUC: 0.794±0.015<br/>**5-Fold CV**<br/>ACC: 0.700±0.026<br/>SEN: 0.701±0.030<br/>SPE: 0.691±0.075<br/>AUC: 0.764±0.030 | Toxicity | XGBoost | |
 | LD50 | LD50 of acute toxicity<br>\* High-toxicity: 1\~50 mg/kg.<br>\* Toxicity: 51\~500 mg/kg.<br>\* low-toxicity: 501~5000 mg/kg. | **Test Set**<br/>ACC: 0.765±0.007<br/>SEN: 0.764±0.015<br/>SPE: 0.765±0.014<br/>AUC: 0.848±0.007<br/>**5-Fold CV**<br/>ACC: 0.741±0.045<br/>SEN: 0.742±0.128<br/>SPE: 0.740±0.111<br/>AUC: 0.833±0.033 | Toxicity | XGBoost | |
 
+### Downloading Pretrained Model
+
+A pretrained model as described in ref. 1 is available on Google Drive. Download and unzip by execuiting the bash script "download_default_model.sh":
+
+```bash
+./download_default_model.sh
+```
+
+The default_model.zip file can also be downloaded manualy under https://drive.google.com/open?id=1oyknOulq_j0w9kzOKKIHdTLo5HphT99h
 
 ## Dev Environment
 
