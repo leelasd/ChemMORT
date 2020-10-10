@@ -1,6 +1,6 @@
-# ChemMRAT
+# ChemMORT
 
-The ChemMRAT (Molecular Represent & Translate) consists of three modules, including **SMILES Encoder**, **Embedding Decoder** and **Molecular Optimizer**.
+The ChemMORT (Molecular Represent & Translate) consists of three modules, including **SMILES Encoder**, **Embedding Decoder** and **Molecular Optimizer**.
 
 ## Introduction
 
