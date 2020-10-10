@@ -1,2 +1,0 @@
-model_checkpoint_path: "PPB.ckpt"
-all_model_checkpoint_paths: "PPB.ckpt"
