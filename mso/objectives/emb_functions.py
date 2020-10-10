@@ -25,11 +25,12 @@ liverTox_model = joblib.load(os.path.join(_dir, 'models/hepatoxicity_xgb.pkl'))
 LD50_model = joblib.load(os.path.join(_dir, 'models/ld50_xgb.pkl'))
 caco2_model = joblib.load(os.path.join(_dir, 'models/Caco2_xgb.pkl'))
 mdck_model = joblib.load(os.path.join(_dir, 'models/MDCK_xgb.pkl'))
+ppb_model = joblib.load(os.path.join(_dir, 'models/PPB_xgb.pkl'))
 
 ################ DNN Model ################
 # caco2_weights = os.path.join(_dir, 'models/Caco-2/Caco-2.ckpt')
 # mdck_weights = os.path.join(_dir, 'models/MDCk/MDCK.ckpt')
-ppb_weights = os.path.join(_dir, 'models/PPB/ppb.ckpt')
+# ppb_weights = os.path.join(_dir, 'models/PPB/ppb.ckpt')
 
 
 def check_valid_smiles(swarm):
@@ -125,16 +126,8 @@ def mdck_score(emb):
 def ppb_score(emb):
     """
     """
-    cdddDescri = Input(shape=(512,), name="cdddDescriptor")
-    x = Dense(128, activation='relu')(cdddDescri)
-    x = Dropout(0.5)(x)
-    output = Dense(1)(x)
-
-    model = Model(inputs=cdddDescri, outputs=output)
-    model.load_weights(caco2_weights)
-
-    ppb = model.predict(emb)
-    return ppb.flatten()
+    ppb = ppb_model.predict(emb)
+    return ppb
 
 @check_valid_smiles(swarm=None)
 def logS_score(emb):
